@@ -4,6 +4,3 @@
 [submodule "frontend_react/src"]
 	path = frontend_react/src
 	url = git@github.com:achicyr/react_base_structure.git
-[submodule "backend"]
-	path = backend
-	url = git@github.com:achicyr/backend_base_structure.git
