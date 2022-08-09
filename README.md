@@ -11,6 +11,8 @@ LES LIENS EN RAPPORT AVEC LA VIDÉO D'INTRODUCTION:
 - [APIs REST](https://youtu.be/VEHPq0YhZZM)
 [APIs REST SCREENCASTs Only](https://youtu.be/Np6ZYUV52T4)
 [APIs REST SCREENCASTs REMAKE by mentor ?bientot_dispo?](???)
+- [FullStack 1](https://www.youtube.com/watch?v=v3tLQw0v1dE&feature=youtu.be&ab_channel=Archist111)
+[FullStack 2]()
 ****
 # MISSION REVISITÉ: 
 
