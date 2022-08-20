@@ -95,6 +95,8 @@ export class SauceFormComponent implements OnInit {
     newSauce.mainPepper = this.sauceForm.get('mainPepper')!.value;
     newSauce.heat = this.sauceForm.get('heat')!.value;
     newSauce.userId = this.auth.getUserId();
+    console.log(this.sauceForm.get('image')!.value)
+    
     if (this.mode === 'new') {
       this.sauces.createSauce(newSauce, this.sauceForm.get('image')!.value).pipe(
         tap(({ message }) => {

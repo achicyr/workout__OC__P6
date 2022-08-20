@@ -12,12 +12,20 @@ const Sauce = require('../models/Sauce')
 /************************************************************************************************************ */
 
 exports.createsauce = (req, res, next) => {
+  console.log(req.file)
   console.log(req.body)
-  const sauceObject = JSON.parse(req.body.sauce)
+  console.log(req.auth.userId);
+  // const sauceObject = JSON.parse(req.body.sauce)
+  const sauceObject = req.body.sauce
+  delete sauceObject._userId;
+  console.log(req.protocol);
+  console.log(req.file);
   const sauce = new Sauce({
       ...sauceObject
       , userId: req.auth.userId
-      , imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      , imageUrl: req.file
+          ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` 
+          : "http://localhost:3000/images/void.jpg"
   })
   sauce.save()
 
@@ -49,6 +57,7 @@ exports.getOnesauce = (req, res, next) => {
     _id: req.params.id
   }).then(
     (sauce) => {
+      console.log(req.auth.userId)
       console.log(sauce)
       res.status(200).json(sauce)
     }
@@ -98,14 +107,16 @@ exports.deletesauce = (req, res, next) => {
       .then(sauce => {
           if (sauce.userId != req.auth.userId) {
               res.status(401).json({message: 'Not authorized'})
-          } else {
+          } else if(sauce.imageUrl.indexOf("void") == -1) {
               const filename = sauce.imageUrl.split('/images/')[1]
               fs.unlink(`images/${filename}`, () => {
                   Sauce.deleteOne({_id: req.params.id})
                       .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
                       .catch(error => res.status(401).json({ error }))
               })
-          }
+          }else Sauce.deleteOne({_id: req.params.id})
+                  .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
+                  .catch(error => res.status(401).json({ error }))
       })
       .catch( error => {
           res.status(500).json({ error })
@@ -118,7 +129,7 @@ exports.deletesauce = (req, res, next) => {
 /************************************************************************************************************ */
 
 exports.likesauce = (req, res, next) => {
-  console.log('likesauce')
+  console.log('likesauce: '+req.params.id)
   // console.log(req.body)
   // console.log(req.auth.userId)
 
@@ -147,7 +158,9 @@ exports.likesauce = (req, res, next) => {
       }
       if(like == -1){
         console.log("-1")
+        console.log(sauce.usersDisliked);
         sauce.usersDisliked.push(req.auth.userId)
+        console.log(sauce.usersDisliked);
         sauce.dislikes++
       }
 
@@ -156,6 +169,8 @@ exports.likesauce = (req, res, next) => {
       console.log("req.auth.userId")
       console.log({ _id: req.auth.userId})
       console.log({ _id: req.params.id})
+      console.log(sauce)
+      console.log(sauce._doc)
       console.log("req.params.id")
 
       Sauce.updateOne({ _id: req.params.id}, { ...({likes,dislikes,usersLiked,usersDisliked} = sauce._doc)})

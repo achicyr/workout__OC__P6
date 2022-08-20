@@ -15,7 +15,6 @@ exports.signup = (req, res, next) => {
             const user = new User({
                 email: req.body.email,
                 password: hash,
-                role: 0,
             })
             user.save()
                 .then((reponse) =>{
@@ -41,7 +40,8 @@ exports.signup = (req, res, next) => {
 /************************************************************************************************************ */
 
 exports.login = (req, res, next) => {
-    User.findOne({ username: req.body.username || "" })
+    console.log(req.body.email);
+    User.findOne({ email: req.body.email || "" })
         .then(user => {
             console.log(user)
             if (!user) {
@@ -60,10 +60,10 @@ exports.login = (req, res, next) => {
                             'RANDOM_TOKEN_SECRET',
                             { expiresIn: '24h' }
                         )
-                        // userId: user._id,
+                        , userId: user._id
                         // ,liked: user.liked
                         // , role: user.role
-                        , ...user
+                        // , ...user
                     })
                 })
                 .catch(_.catchError5)
@@ -87,7 +87,7 @@ exports.logout = (req, res, next) => {
 
 exports.updateRole = (req, res, next) => {
     
-    User.findOne({username: req.params.id})
+    User.findOne({email: req.params.id})
         .then((user) => {
             // console.log(user)
             // console.log(req.body)
